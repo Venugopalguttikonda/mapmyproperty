@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>MapMyProperty - Login & Signup</title>
+  <link rel="stylesheet" href="Signup.css">
+  <link rel="stylesheet" href="Starter.html">
+</head>
+<body>
+
+  <div class="container">
+    <h2 id="formTitle">Signup</h2>
+
+    <!-- Signup Form -->
+    <div id="signupFormContainer">
+      <form id="signupForm">
+        <input type="text" id="signupUsername" placeholder="Username" required />
+        <input type="password" id="signupPassword" placeholder="Password" required />
+        <button type="submit">Sign Up</button>
+        <p id="signupMessage" class="message"></p>
+        <p class="switch-link">Already have an account? <a href="#" onclick="switchToLogin()">Login</a></p>
+      </form>
+    </div>
+
+    <!-- Login Form -->
+    <div id="loginFormContainer" style="display: none;">
+      <form id="loginForm">
+        <input type="text" id="loginUsername" placeholder="Username" required />
+        <input type="password" id="loginPassword" placeholder="Password" required />
+        <button type="submit">Login</button>
+        <p id="loginMessage" class="message"></p>
+        <p class="switch-link">Don't have an account? <a href="#" onclick="switchToSignup()">Sign up</a></p>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const signupForm = document.getElementById('signupForm');
+    const loginForm = document.getElementById('loginForm');
+
+    signupForm.onsubmit = async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('signupUsername').value;
+      const password = document.getElementById('signupPassword').value;
+
+      try {
+        const res = await fetch('http://localhost:5000/api/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json();
+        const msg = document.getElementById('signupMessage');
+        msg.style.color = res.ok ? 'green' : 'red';
+        msg.textContent = res.ok ? 'Signup successful! Please login.' : data.error || 'Signup failed.';
+
+        if (res.ok) {
+          switchToLogin();
+        }
+      } catch {
+        document.getElementById('signupMessage').textContent = 'Error connecting to server';
+      }
+    };
+
+    loginForm.onsubmit = async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('loginUsername').value;
+      const password = document.getElementById('loginPassword').value;
+
+      try {
+        const res = await fetch('http://localhost:5000/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json();
+        const msg = document.getElementById('loginMessage');
+        msg.style.color = res.ok ? 'green' : 'red';
+        msg.textContent = res.ok ? 'Login successful!' : data.error || 'Login failed.';
+
+        if (res.ok) {
+          localStorage.setItem('token', data.token); // Save JWT
+          setTimeout(() => {
+            window.location.href = 'main.html'; // Redirect to dashboard or map
+          }, 1000);
+        }
+      } catch {
+        document.getElementById('loginMessage').textContent = 'Error connecting to server';
+      }
+    };
+
+    function switchToLogin() {
+      document.getElementById('signupFormContainer').style.display = 'none';
+      document.getElementById('loginFormContainer').style.display = 'block';
+      document.getElementById('formTitle').textContent = 'Login';
+    }
+
+    function switchToSignup() {
+      document.getElementById('signupFormContainer').style.display = 'block';
+      document.getElementById('loginFormContainer').style.display = 'none';
+      document.getElementById('formTitle').textContent = 'Signup';
+    }
+  </script>
+
+</body>
+</html>
