@@ -3,10 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <title>MapMyProperty - Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <!-- Custom CSS -->
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+
+  <!-- 🔹 Navbar -->
   <nav>
     <div class="logo">MapMyProperty</div>
     <div class="profile-section" id="profileSection" tabindex="0" aria-haspopup="true" aria-expanded="false">
@@ -18,16 +24,35 @@
     </div>
   </nav>
 
+  <!-- 🔹 Main Dashboard -->
   <main>
-    <h1>Welcome to MapMyProperty</h1>
-    <h2>Map View</h2>
-    <div id="map"></div>
-    <h2>Available Properties:</h2>
-    <div id="propertiesList">Loading properties...</div>
+    <header>
+      <h1>Welcome to MapMyProperty</h1>
+    </header>
+
+    <!-- 🔍 Search Bar -->
+    <div class="search-container">
+      <input type="text" id="locationSearch" placeholder="Enter a location (e.g., Hyderabad, Mumbai)" />
+      <button id="searchBtn">Search</button>
+    </div>
+
+    <!-- 📍 Map + Properties -->
+    <div class="dashboard-container">
+      <!-- Map -->
+      <div id="map" class="map-container"></div>
+
+      <!-- Property List -->
+      <aside class="property-panel">
+        <h2>Available Properties</h2>
+        <div id="propertiesList">Loading properties...</div>
+      </aside>
+    </div>
   </main>
 
+  <!-- 🔹 Hidden Form Popup -->
   <div id="formContainer" class="form-popup" style="display:none;"></div>
 
+  <!-- Scripts -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="main.js"></script>
 </body>

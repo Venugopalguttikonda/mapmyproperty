@@ -1,3 +1,8 @@
+// ==============================
+// MapMyProperty - main.js (Reorganized)
+// ==============================
+
+// ========== AUTH & UI ==========
 const token = localStorage.getItem('token');
 const logoutBtn = document.getElementById('logoutBtn');
 const propertiesList = document.getElementById('propertiesList');
@@ -32,12 +37,17 @@ document.addEventListener('click', (e) => {
   }
 });
 
+// ========== MAP INITIALIZATION ==========
 const map = L.map('map').setView([17.385044, 78.486671], 13);
+
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 19,
   attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
+const markerLayer = L.layerGroup().addTo(map);
+
+// ========== LOAD PROPERTIES ==========
 function addPropertyToList(p) {
   const div = document.createElement('div');
   div.classList.add('property-card');
@@ -48,6 +58,8 @@ function addPropertyToList(p) {
 
 function loadProperties() {
   propertiesList.innerHTML = 'Loading properties...';
+  markerLayer.clearLayers();
+
   fetch('http://localhost:5000/api/properties', {
     headers: { 'Authorization': 'Bearer ' + token }
   })
@@ -59,12 +71,13 @@ function loadProperties() {
       }
       propertiesList.innerHTML = '';
       data.forEach(property => {
-        const marker = L.marker([property.lat, property.lng]).addTo(map);
+        const marker = L.marker([property.lat, property.lng]);
         marker.bindPopup(`
           <strong>${property.title}</strong><br>
           ₹${parseFloat(property.price).toFixed(2)}<br>
           Contact: ${property.contact}
         `);
+        marker.addTo(markerLayer);
         addPropertyToList(property);
       });
     })
@@ -76,12 +89,15 @@ function loadProperties() {
 
 loadProperties();
 
+// ========== ADD PROPERTY FORM ==========
 map.on('click', function(e) {
   const lat = e.latlng.lat.toFixed(6);
   const lng = e.latlng.lng.toFixed(6);
+
   formContainer.style.display = 'block';
   formContainer.style.left = `${e.originalEvent.pageX}px`;
   formContainer.style.top = `${e.originalEvent.pageY}px`;
+
   formContainer.innerHTML = `
     <form id="addPropertyForm">
       <input type="text" name="title" placeholder="Title" required />
@@ -94,13 +110,16 @@ map.on('click', function(e) {
       <button type="button" id="cancelBtn">Cancel</button>
     </form>
   `;
+
   document.getElementById('cancelBtn').onclick = () => {
     formContainer.style.display = 'none';
   };
+
   document.getElementById('addPropertyForm').onsubmit = function(e) {
     e.preventDefault();
     const formData = new FormData(this);
     const data = Object.fromEntries(formData.entries());
+
     fetch('http://localhost:5000/api/properties', {
       method: 'POST',
       headers: {
@@ -123,4 +142,31 @@ map.on('click', function(e) {
       alert('Error adding property');
     });
   };
+});
+
+// ========== LOCATION SEARCH ==========
+const searchBtn = document.getElementById('searchBtn');
+const locationSearch = document.getElementById('locationSearch');
+
+searchBtn.addEventListener('click', () => {
+  const query = locationSearch.value.trim();
+  if (!query) return;
+
+  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`;
+
+  fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      if (data && data.length > 0) {
+        const { lat, lon } = data[0];
+        map.setView([parseFloat(lat), parseFloat(lon)], 14);
+        loadProperties();
+      } else {
+        alert("Location not found!");
+      }
+    })
+    .catch(err => {
+      console.error("Search failed:", err);
+      alert("Failed to search location.");
+    });
 });

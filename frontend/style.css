@@ -1,11 +1,16 @@
+/* ========= Global ========= */
 body, html {
-  margin: 0; padding: 0; font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
   background: #f8f9fa;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   height: 100vh;
 }
+
+/* ========= Navbar ========= */
 nav {
   height: 60px;
   background-color: #007bff;
@@ -58,6 +63,8 @@ nav .logo {
 .profile-dropdown button:hover {
   background-color: #f2f2f2;
 }
+
+/* ========= Main ========= */
 main {
   flex: 1;
   padding: 20px;
@@ -67,6 +74,37 @@ main {
   width: 100%;
   text-align: center;
 }
+
+/* ========= Search Bar ========= */
+.search-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.search-container input {
+  flex: 1 1 250px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1.5px solid #ccc;
+  font-size: 16px;
+}
+.search-container button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.search-container button:hover {
+  background-color: #0056b3;
+}
+
+/* ========= Map ========= */
 #map {
   height: 400px;
   width: 100%;
@@ -74,6 +112,8 @@ main {
   margin-bottom: 30px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.1);
 }
+
+/* ========= Properties List ========= */
 #propertiesList {
   width: 100%;
   background: white;
@@ -83,6 +123,7 @@ main {
   max-height: 300px;
   overflow-y: auto;
   font-size: 14px;
+  text-align: left;
 }
 .property-card {
   padding: 10px;
@@ -95,6 +136,8 @@ main {
   font-size: 1.1em;
   color: #007bff;
 }
+
+/* ========= Form Popup ========= */
 .form-popup {
   position: absolute;
   background: white;
@@ -132,4 +175,12 @@ main {
 }
 .form-popup button#cancelBtn:hover {
   background: #5a6268;
+}
+
+/* ========= Responsive ========= */
+@media (max-width: 600px) {
+  .search-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
