@@ -5,6 +5,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const path = require('path'); // ✅ Add path
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -24,6 +25,14 @@ const db = mongoose.connection;
 db.on('error', (err) => console.error('❌ MongoDB connection error:', err));
 db.once('open', () => {
   console.log('✅ Connected to MongoDB');
+});
+
+// ✅ Serve static files from the 'frontend' folder
+app.use(express.static(path.join(__dirname, 'frontend')));
+
+// ✅ Route for homepage (serves signup.html)
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend', 'signup.html'));
 });
 
 // ======= User Schema & Model =======
@@ -122,11 +131,6 @@ app.post('/api/properties', authenticateToken, async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: 'Failed to add property', details: err.message });
   }
-});
-
-// Root
-app.get('/', (req, res) => {
-  res.send('🌍 Welcome to MapMyProperty API');
 });
 
 // Start server
