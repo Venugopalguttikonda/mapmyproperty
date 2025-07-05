@@ -120,7 +120,7 @@ map.on('click', function(e) {
     const formData = new FormData(this);
     const data = Object.fromEntries(formData.entries());
 
-    fetch('http://localhost:5000/api/properties', {
+    fetch('/api/properties', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
