@@ -60,7 +60,12 @@ function loadProperties() {
   propertiesList.innerHTML = 'Loading properties...';
   markerLayer.clearLayers();
 
-  fetch('/api/properties', {
+  const API_BASE_URL =
+    window.location.hostname.includes('localhost')
+      ? 'http://localhost:5000'
+      : 'https://mapmyproperty-3.onrender.com';
+
+  fetch('${API_BASE_URL}/api/properties', {
     headers: { 'Authorization': 'Bearer ' + token }
   })
     .then(res => res.json())
