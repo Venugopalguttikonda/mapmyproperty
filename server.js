@@ -5,7 +5,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const path = require('path'); // ✅ Add path
+const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -27,12 +27,10 @@ db.once('open', () => {
   console.log('✅ Connected to MongoDB');
 });
 
-// ✅ Serve static files from the 'frontend' folder
+// ✅ Serve static files
 app.use(express.static(path.join(__dirname, 'frontend')));
-
-// ✅ Route for homepage (serves signup.html)
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend', 'signup.html'));
+  res.redirect('/signup.html');
 });
 
 // ======= User Schema & Model =======
