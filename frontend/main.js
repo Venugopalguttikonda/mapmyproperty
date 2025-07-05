@@ -60,7 +60,7 @@ function loadProperties() {
   propertiesList.innerHTML = 'Loading properties...';
   markerLayer.clearLayers();
 
-  fetch('http://localhost:5000/api/properties', {
+  fetch('/api/properties', {
     headers: { 'Authorization': 'Bearer ' + token }
   })
     .then(res => res.json())
